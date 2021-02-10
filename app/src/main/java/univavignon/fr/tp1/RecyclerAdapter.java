@@ -1,5 +1,6 @@
 package univavignon.fr.tp1;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import univavignon.fr.tp1.data.Country;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
     @NonNull
@@ -26,14 +29,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             "Washinton",
             "Tokio"
     };
-    private int[] images = {
-            R.drawable.ic_flag_of_france_320px,
-            R.drawable.ic_flag_of_germany_320px,
-            R.drawable.ic_flag_of_spain_320px,
-            R.drawable.ic_flag_of_south_africa_320px,
-            R.drawable.ic_flag_of_the_united_states_320px,
-            R.drawable.ic_flag_of_japan_320px
-    };
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_layout, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(v);
@@ -46,7 +42,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         ViewHolder(View itemView) {
             super(itemView);
-            imagePays = itemView.findViewById(R.id.listPays);
+            imagePays = itemView.findViewById(R.id.imagePays);
             itemPays = itemView.findViewById(R.id.textView);
             itemCapitale = itemView.findViewById(R.id.textView2);
 
@@ -58,7 +54,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     int position = getAdapterPosition();
 
                     ListFragmentDirections.ActionListFragmentToDetailFragment action = ListFragmentDirections.actionListFragmentToDetailFragment();
-                    action.setKeyChaterId(position);
+                    action.setCountryId(position);
                     Navigation.findNavController(v).navigate(action);
                 }
             });
@@ -69,7 +65,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.itemPays.setText(pays[i]);
         viewHolder.itemCapitale.setText(capitale[i]);
-        viewHolder.imagePays.setImageResource(images[i]);
+        //viewHolder.imagePays.setImageResource(images[i]);
+        // NB : dans le nom de l’URI, ne pas mettre l’extension .png
+        String uri = Country.countries[i].getImgUri();
+        Context c = viewHolder.imagePays.getContext();
+        viewHolder.imagePays.setImageDrawable(c.getResources().getDrawable(c.getResources().getIdentifier (uri, null , c.getPackageName())));
     }
     @Override
     public int getItemCount() {
